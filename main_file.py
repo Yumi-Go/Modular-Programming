@@ -2,6 +2,9 @@
 # Description: Week 12 Project
 # 다 하면 http://pythontutor.com/visualize.html#mode=edit 돌려보기
 
+import module
+
+
 def load_races_and_people(races_file, runners_file):
     # This functions reads in the relevant files and creates three lists.
     # races list , names list and ids list.
@@ -10,15 +13,16 @@ def load_races_and_people(races_file, runners_file):
 
     connection_races = open(races_file)
     races_list = []
+    names_list = []
+    id_list = []
     while True:
         line = connection_races.readline().rstrip()
         if line == "":
             break
         races_list.append(line)
     connection_races.close()
+
     connection_runners = open(runners_file)
-    names_list = []
-    id_list = []
     while True:
         line = connection_runners.readline()
         line_data = line.split(",")
@@ -42,39 +46,54 @@ def show_menu(races_list, names_list, id_list):
     # For each menu option decide on the name of the function to be called and
     # decide which list(s) need to be passed in to each function
     # show_race_details parameters : race list
-    choose_menu = int(input("Choose the number of the menu:\n"
-                            "\t1. Show the results for a race\n"
-                            "\t2. Add results for a race\n"
-                            "\t3. Show all competitors by county\n"
-                            "\t4. Show the winner of each race\n"
-                            "\t5. Show all the race times for one competitor\n"
-                            "\t6. Show all competitors who have won a race\n"
-                            "\t7. Quit\n"
-                            "==> "))
     while True:
-        if choose_menu == 1:
-            print("You choose 1")
-
-        elif choose_menu == 2:
-            print("You choose 2")
-
-        elif choose_menu == 3:
-            print("You choose 3")
-
-        elif choose_menu == 4:
-            print("You choose 4")
-
-        elif choose_menu == 5:
-            print("You choose 5")
-
-        elif choose_menu == 6:
-            print("You choose 6")
-
-        elif choose_menu == 7:
-            break
-
-        else:
-            print("Error. Enter the number again.")
+        try:
+            choose_menu = int(input("Choose the number of the menu:\n"
+                                    "\t1. Show the results for a race\n"
+                                    "\t2. Add results for a race\n"
+                                    "\t3. Show all competitors by county\n"
+                                    "\t4. Show the winner of each race\n"
+                                    "\t5. Show all the race times for one competitor\n"
+                                    "\t6. Show all competitors who have won a race\n"
+                                    "\t7. Quit\n"
+                                    "==> "))
+            if choose_menu < 1 or choose_menu > 7:
+                print("Enter a number between 1 to 7")
+            if choose_menu == 1:
+                print("You choose 1")
+                print(f"races_list = {races_list}\n"
+                      f"names_list = {names_list}\n"
+                      f"id_list = {id_list}\n")
+            if choose_menu == 2:
+                print("You choose 2")
+                print(f"races_list = {races_list}\n"
+                      f"names_list = {names_list}\n"
+                      f"id_list = {id_list}\n")
+            if choose_menu == 3:
+                print("You choose 3")
+                print(f"races_list = {races_list}\n"
+                      f"names_list = {names_list}\n"
+                      f"id_list = {id_list}\n")
+            if choose_menu == 4:
+                print("You choose 4")
+                print(f"races_list = {races_list}\n"
+                      f"names_list = {names_list}\n"
+                      f"id_list = {id_list}\n")
+            if choose_menu == 5:
+                print("You choose 5")
+                print(f"races_list = {races_list}\n"
+                      f"names_list = {names_list}\n"
+                      f"id_list = {id_list}\n")
+            if choose_menu == 6:
+                print("You choose 6")
+                print(f"races_list = {races_list}\n"
+                      f"names_list = {names_list}\n"
+                      f"id_list = {id_list}\n")
+            if choose_menu == 7:
+                break
+        except:
+            print("Error. Enter a number.")
+    return choose_menu
 
 
 def save_races_list(races_list):
@@ -92,8 +111,12 @@ def show_race_details(races_list):
     # Display this information to the screen.
     for i, item in enumerate(races_list):
         print(f"{i+1}: {item}")
-    choose_race = int(input("Choose a race: "))
-    destination = open(choose_race, "w")
+    while True:
+        try:
+            choose_race = int(input("Choose a race: "))
+
+        except:
+            print("Error. Enter a number.")
 
 
 def main():
@@ -101,7 +124,8 @@ def main():
     runners_file = "runners.txt"
     races_list, names_list, id_list = load_races_and_people(races_file, runners_file)
     show_menu(races_list, names_list, id_list)
-    save_races_list()
+    save_races_list(races_list)
+    show_race_details(races_list)
 
 
 main()

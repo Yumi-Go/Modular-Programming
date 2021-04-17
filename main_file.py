@@ -57,54 +57,50 @@ def show_menu(races_list, names_list, id_list):
                                               "\t6. Show all competitors who have won a race\n"
                                               "\t7. Quit\n"
                                               "==> ")
+        print("")
         if choose_menu < 1 or choose_menu > 7:
             print("Enter a number between 1 to 7")
         if choose_menu == 1:
-            print("You choose 1")
+            print("***** Show the results for a race *****\n")
             show_race_details(races_list)
             print(f"races_list = {races_list}\n"
                   f"names_list = {names_list}\n"
                   f"id_list = {id_list}\n")
         if choose_menu == 2:
-            print("You choose 2")
+            print("***** Add results for a race *****\n")
             add_new_race(races_list)
-            while True:
-                choose_add_or_quit = module.get_positive_int("Choose the number of the menu: \n"
-                                                      "\t1. Add results for another race: \n"
-                                                      "\t2. Quit")
-                if choose_add_or_quit == 1:
-                    add_new_race(races_list)
-                elif choose_add_or_quit == 2:
-                    break
             #  When the user chooses to quit
             #  add code to make sure that the contents of places.txt is the same as the list of race locations stored in your program.
             #  Overwrite the existing file with the current list.
-            print(
-                "The contents of races.txt")  # make sure that the contents of races.txt is the same as the list of race locations stored in this program.
+            print("[The contents of races.txt file]")  # to make sure that the contents of races.txt is the same as the list of race locations stored in this program.
             connection = open("races.txt")
-            print(connection)
+            read_races_file = connection.read()
+            print(read_races_file)
             connection.close()
             print(f"Races locations stored in this program: {races_list}")
             print(f"races_list = {races_list}\n"
                   f"names_list = {names_list}\n"
                   f"id_list = {id_list}\n")
         if choose_menu == 3:
-            print("You choose 3")
+            # This requires printing the competitors names and the competitors ids in two groups.
+            # 1. Print those from Cork – ( if the id starts with “CK”)
+            # 2. Print them those from Kerry – ( if the id starts with “KY”)
+            print("***** Show all competitors by county *****\n")
             print(f"races_list = {races_list}\n"
                   f"names_list = {names_list}\n"
                   f"id_list = {id_list}\n")
         if choose_menu == 4:
-            print("You choose 4")
+            print("***** Show the winner of each race *****\n")
             print(f"races_list = {races_list}\n"
                   f"names_list = {names_list}\n"
                   f"id_list = {id_list}\n")
         if choose_menu == 5:
-            print("You choose 5")
+            print("***** Show all the race times for one competitor *****\n")
             print(f"races_list = {races_list}\n"
                   f"names_list = {names_list}\n"
                   f"id_list = {id_list}\n")
         if choose_menu == 6:
-            print("You choose 6")
+            print("***** Show all competitors who have won a race *****\n")
             print(f"races_list = {races_list}\n"
                   f"names_list = {names_list}\n"
                   f"id_list = {id_list}\n")
@@ -120,10 +116,14 @@ def show_race_details(races_list):
     # Construct the name of the file for this race -
     # Open the file and read the data into 2 lists: and id_list and times_list.
     # Display this information to the screen.
-    for i, item in enumerate(races_list):
-        print(f"{i+1}: {item}")
+    quit_number = len(races_list) + 1  # add quit menu option
     while True:
-        race_number = module.get_positive_int("Enter a Race Number: ")
+        for i, item in enumerate(races_list):
+            print(f"{i + 1}: {item}")
+        print(f"{quit_number}: Quit")
+        race_number = module.get_positive_int("Choice >> ")
+        if race_number == quit_number:  # if quit is chosen among the above menu
+            break
         race_position = int(race_number) - 1
         id_list_of_each_race = []
         time_list_of_each_race = []
@@ -131,6 +131,7 @@ def show_race_details(races_list):
         title = f"Result for {races_list[race_position]}"
         length_title = len(title)
         division_line = '=' * length_title
+        print("")
         print(division_line)
         print(title)
         print(division_line)
@@ -147,9 +148,10 @@ def show_race_details(races_list):
         connection.close()
         for i in range(len(id_list_of_each_race)):
             print(f"{id_list_of_each_race[i]}   {converted_time_list_of_each_race[i]}")
-        print()
+        print("")
         position_of_winner = find_position_of_winner(time_list_of_each_race)
         print(f"{id_list_of_each_race[position_of_winner]} won the race.")
+        print("\n\n")
         # 만약 따로 분리한 함수를 넣어주고 싶으면
         # if race_number == 1 or race_number == 2:
         #     display_each_race_details(races_list, race_number)
@@ -181,7 +183,7 @@ def add_new_race(races_list):
         new_venue = get_new_venue.capitalize()
         races_list.append(new_venue)
         destination_races_file = open(races_file, 'a')  # races.txt 파일에 new_venue 추가
-        destination_races_file.write(new_venue)
+        destination_races_file.write(f"{new_venue}\n")
         destination_races_file.close()
         # Bring all participants' names (IDs) from the file and display it to the user one by one,
         # and let the user enter each participant's time in seconds.
@@ -195,19 +197,28 @@ def add_new_race(races_list):
                                                               f"{line_data[0]}({line_data[1].rstrip()}) in {new_venue} race\n"
                                                               f"(Enter 0 if this runner did not run in this race)\n"
                                                               f"==> ")
+            print("")
             if get_each_time_in_second != 0:  # Only added when a non-zero number is entered
-                added_result = f"{line_data[1]},{get_each_time_in_second}"
+                added_result = f"{line_data[1].rstrip()},{get_each_time_in_second}"
                 print(added_result)  # Print this data to the screen as it is entered in the following format: KY-12,319
+                print("")
                 new_venue_file = f"{get_new_venue.lower()}.txt"  # the name of a new race(in new venue) file which was gotten from above
-                destination_new_venue_file = open(new_venue_file, 'w')  # create new race(in new venue) file and write to it in the following format: KY-12,319
-                destination_new_venue_file.write(added_result)
+                destination_new_venue_file = open(new_venue_file, 'a')  # create new race(in new venue) file and write to it in the following format: KY-12,319
+                destination_new_venue_file.write(f"{added_result}\n")
                 destination_new_venue_file.close()
         connection.close()
+        choose_add_or_quit = module.get_positive_int("Do you want to add another new venue for the race continuously?\n"
+                                                     "\t1. Yes - Continue\n"
+                                                     "\t2. No - Quit\n"
+                                                     "==> ")
+        print("")
+        if choose_add_or_quit == 2:
+            break
         # Overwrite the existing file with the current list.
 
 
-def save_races_list(races_list):
-    races_list = show_menu()
+#def save_races_list(races_list):
+    # races_list = show_menu()
 # the save_races_list function takes the races list as a parameter
 # and recreates the races.txt file. Race locations many have been
 # added during the program run.
@@ -218,7 +229,6 @@ def main():
     runners_file = "runners.txt"
     races_list, names_list, id_list = load_races_and_people(races_file, runners_file)
     show_menu(races_list, names_list, id_list)
-    save_races_list(races_list)
 
 
 main()

@@ -63,9 +63,9 @@ def show_menu(races_list, names_list, id_list):
         if choose_menu == 1:
             print("***** Show the results for a race *****\n")
             show_race_details(races_list)
-            print(f"races_list = {races_list}\n"
-                  f"names_list = {names_list}\n"
-                  f"id_list = {id_list}\n")
+            print(f"races_list = {races_list}\n"  # for interim check
+                  f"names_list = {names_list}\n"  # for interim check
+                  f"id_list = {id_list}\n")  # for interim check
         if choose_menu == 2:
             print("***** Add results for a race *****\n")
             add_new_race(races_list)
@@ -78,32 +78,33 @@ def show_menu(races_list, names_list, id_list):
             print(read_races_file)
             connection.close()
             print(f"Races locations stored in this program: {races_list}")
-            print(f"races_list = {races_list}\n"
-                  f"names_list = {names_list}\n"
-                  f"id_list = {id_list}\n")
+            print(f"races_list = {races_list}\n"  # for interim check
+                  f"names_list = {names_list}\n"  # for interim check
+                  f"id_list = {id_list}\n")  # for interim check
         if choose_menu == 3:
             # This requires printing the competitors names and the competitors ids in two groups.
             # 1. Print those from Cork – ( if the id starts with “CK”)
             # 2. Print them those from Kerry – ( if the id starts with “KY”)
             print("***** Show all competitors by county *****\n")
-            print(f"races_list = {races_list}\n"
-                  f"names_list = {names_list}\n"
-                  f"id_list = {id_list}\n")
+            show_competitors_by_county(names_list, id_list)
+            print(f"races_list = {races_list}\n"  # for interim check
+                  f"names_list = {names_list}\n"  # for interim check
+                  f"id_list = {id_list}\n")  # for interim check
         if choose_menu == 4:
             print("***** Show the winner of each race *****\n")
-            print(f"races_list = {races_list}\n"
-                  f"names_list = {names_list}\n"
-                  f"id_list = {id_list}\n")
+            print(f"races_list = {races_list}\n"  # for interim check
+                  f"names_list = {names_list}\n"  # for interim check
+                  f"id_list = {id_list}\n")  # for interim check
         if choose_menu == 5:
             print("***** Show all the race times for one competitor *****\n")
-            print(f"races_list = {races_list}\n"
-                  f"names_list = {names_list}\n"
-                  f"id_list = {id_list}\n")
+            print(f"races_list = {races_list}\n"  # for interim check
+                  f"names_list = {names_list}\n"  # for interim check
+                  f"id_list = {id_list}\n")  # for interim check
         if choose_menu == 6:
             print("***** Show all competitors who have won a race *****\n")
-            print(f"races_list = {races_list}\n"
-                  f"names_list = {names_list}\n"
-                  f"id_list = {id_list}\n")
+            print(f"races_list = {races_list}\n"  # for interim check
+                  f"names_list = {names_list}\n"  # for interim check
+                  f"id_list = {id_list}\n")  # for interim check
         if choose_menu == 7:
             break
     return races_list
@@ -111,11 +112,6 @@ def show_menu(races_list, names_list, id_list):
 
 # 메뉴 옵션1에 해당함
 def show_race_details(races_list):
-    # Display the list of races and allow the user enter a number .
-    # From this number find the name of the race chosen.
-    # Construct the name of the file for this race -
-    # Open the file and read the data into 2 lists: and id_list and times_list.
-    # Display this information to the screen.
     quit_number = len(races_list) + 1  # add quit menu option
     while True:
         for i, item in enumerate(races_list):
@@ -128,13 +124,9 @@ def show_race_details(races_list):
         id_list_of_each_race = []
         time_list_of_each_race = []
         converted_time_list_of_each_race = []
-        title = f"Result for {races_list[race_position]}"
-        length_title = len(title)
-        division_line = '=' * length_title
         print("")
-        print(division_line)
-        print(title)
-        print(division_line)
+        title = f"Result for {races_list[race_position]}"
+        title_bar(title)
         connection = open(f"{races_list[race_position].lower()}.txt")  # open the each venue of race file
         while True:
             line = connection.readline()
@@ -215,6 +207,46 @@ def add_new_race(races_list):
         if choose_add_or_quit == 2:
             break
         # Overwrite the existing file with the current list.
+
+
+# 메뉴 옵션3에 해당함
+def show_competitors_by_county(names_list, id_list):
+    cork_runners_id_list = []
+    cork_runners_names_list = []
+    kerry_runners_id_list = []
+    kerry_runners_names_list = []
+    for id in id_list:
+        position = id_list.index(id)
+        if id[:2] == 'CK':
+            cork_runners_id_list.append(id)
+            cork_runners_names_list.append(names_list[position])
+        elif id[:2] == 'KY':
+            kerry_runners_id_list.append(id)
+            kerry_runners_names_list.append(names_list[position])
+    print(f"cork_runners_id_list: {cork_runners_id_list}")  # for interim check
+    print(f"cork_runners_names_list: {cork_runners_names_list}")  # for interim check
+    print(f"kerry_runners_id_list: {kerry_runners_id_list}")  # for interim check
+    print(f"kerry_runners_names_list: {kerry_runners_names_list}")  # for interim check
+    title_bar("Cork Runners")  # Result 1: Print Cork runners
+    for cork in range(len(cork_runners_names_list)):
+        print(f"{cork_runners_names_list[cork]:<15}{cork_runners_id_list[cork]}")
+    print("")
+    title_bar("Kerry Runners")  # Result 2: Print Kerry runners
+    for kerry in range(len(kerry_runners_names_list)):
+        print(f"{kerry_runners_names_list[kerry]:<15}{kerry_runners_id_list[kerry]}")
+
+
+
+def title_bar(title):
+    length_title = len(title)
+    division_line = '-' * length_title
+    print(title)
+    print(division_line)
+
+
+
+
+
 
 
 #def save_races_list(races_list):

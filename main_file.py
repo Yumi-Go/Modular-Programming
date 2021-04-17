@@ -61,11 +61,30 @@ def show_menu(races_list, names_list, id_list):
             print("Enter a number between 1 to 7")
         if choose_menu == 1:
             print("You choose 1")
+            show_race_details(races_list)
             print(f"races_list = {races_list}\n"
                   f"names_list = {names_list}\n"
                   f"id_list = {id_list}\n")
         if choose_menu == 2:
             print("You choose 2")
+            add_new_race(races_list)
+            while True:
+                choose_add_or_quit = module.get_positive_int("Choose the number of the menu: \n"
+                                                      "\t1. Add results for another race: \n"
+                                                      "\t2. Quit")
+                if choose_add_or_quit == 1:
+                    add_new_race(races_list)
+                elif choose_add_or_quit == 2:
+                    break
+            #  When the user chooses to quit
+            #  add code to make sure that the contents of places.txt is the same as the list of race locations stored in your program.
+            #  Overwrite the existing file with the current list.
+            print(
+                "The contents of races.txt")  # make sure that the contents of races.txt is the same as the list of race locations stored in this program.
+            connection = open("races.txt")
+            print(connection)
+            connection.close()
+            print(f"Races locations stored in this program: {races_list}")
             print(f"races_list = {races_list}\n"
                   f"names_list = {names_list}\n"
                   f"id_list = {id_list}\n")
@@ -91,20 +110,58 @@ def show_menu(races_list, names_list, id_list):
                   f"id_list = {id_list}\n")
         if choose_menu == 7:
             break
-    return choose_menu
+    return races_list
 
 
-def save_races_list(races_list):
-    # the save_races_list function takes the races list as a parameter
-    # and recreates the races.txt file. Race locations many have been
-    # added during the program run.
-    print("hello")
+# 메뉴 옵션1에 해당함
+def show_race_details(races_list):
+    # Display the list of races and allow the user enter a number .
+    # From this number find the name of the race chosen.
+    # Construct the name of the file for this race -
+    # Open the file and read the data into 2 lists: and id_list and times_list.
+    # Display this information to the screen.
+    for i, item in enumerate(races_list):
+        print(f"{i+1}: {item}")
+    while True:
+        race_number = module.get_positive_int("Enter a Race Number: ")
+        race_position = int(race_number) - 1
+        id_list_of_each_race = []
+        time_list_of_each_race = []
+        converted_time_list_of_each_race = []
+        title = f"Result for {races_list[race_position]}"
+        length_title = len(title)
+        division_line = '=' * length_title
+        print(division_line)
+        print(title)
+        print(division_line)
+        connection = open(f"{races_list[race_position].lower()}.txt")  # open the each venue of race file
+        while True:
+            line = connection.readline()
+            line_data = line.split(",")
+            if line == "":
+                break
+            id_list_of_each_race.append(line_data[0])
+            time_list_of_each_race.append(line_data[1].rstrip())
+            converted_time_list = convert_time_from_seconds_to_minutes(time_list_of_each_race)
+            converted_time_list_of_each_race = converted_time_list
+        connection.close()
+        for i in range(len(id_list_of_each_race)):
+            print(f"{id_list_of_each_race[i]}   {converted_time_list_of_each_race[i]}")
+        print()
+        position_of_winner = find_position_of_winner(time_list_of_each_race)
+        print(f"{id_list_of_each_race[position_of_winner]} won the race.")
+        # 만약 따로 분리한 함수를 넣어주고 싶으면
+        # if race_number == 1 or race_number == 2:
+        #     display_each_race_details(races_list, race_number)
+        #     break
+        # else:
+        #     print("Enter a correct number.")
 
 
 def convert_time_from_seconds_to_minutes(time_list):
     converted_time_list = []
     for time in time_list:
-        converted_time = f"{int(time) // 60} min {int(time) % 60} seconds"
+        converted_time = f"{int(time) // 60} min {int(time) % 60:>2} seconds"
         converted_time_list.append(converted_time)
     return converted_time_list
 
@@ -115,79 +172,45 @@ def find_position_of_winner(time_list):
     return position_of_winner
 
 
-def display_each_race_details(races_list, race_number):
-    print("display each race details")
-    race_position = int(race_number) - 1
-    id_list_of_each_race = []
-    time_list_of_each_race = []
-    converted_time_list_of_each_race = []
-    title = f"Result for {races_list[race_position]}"
-    length_title = len(title)
-    division_line = '=' * length_title
-    print(title)
-    print(division_line)
-    connection = open(f"{races_list[race_position].lower()}.txt")
+# 메뉴 옵션2에 해당함
+def add_new_race(races_list):
+    races_file = "races.txt"
+    runners_file = "runners.txt"
     while True:
-        line = connection.readline()
-        line_data = line.split(",")
-        if line == "":
-            break
-        id_list_of_each_race.append(line_data[0])
-        time_list_of_each_race.append(line_data[1].rstrip())
-        converted_time_list = convert_time_from_seconds_to_minutes(time_list_of_each_race)
-        converted_time_list_of_each_race = converted_time_list
-    connection.close()
-    for i in range(len(id_list_of_each_race)):
-        print(f"{id_list_of_each_race[i]}   {converted_time_list_of_each_race[i]}")
-    print()
-    position_of_winner = find_position_of_winner(time_list_of_each_race)
-    print(f"{id_list_of_each_race[position_of_winner]} won the race.")
+        get_new_venue = module.get_string("Enter a new venue of race: ")  # user에게 new race venue 물어보기
+        new_venue = get_new_venue.capitalize()
+        races_list.append(new_venue)
+        destination_races_file = open(races_file, 'a')  # races.txt 파일에 new_venue 추가
+        destination_races_file.write(new_venue)
+        destination_races_file.close()
+        # Bring all participants' names (IDs) from the file and display it to the user one by one,
+        # and let the user enter each participant's time in seconds.
+        connection = open(runners_file)
+        while True:
+            line = connection.readline()
+            if line == "":
+                break
+            line_data = line.split(",")
+            get_each_time_in_second = module.get_positive_int(f"Enter the time in seconds for "
+                                                              f"{line_data[0]}({line_data[1].rstrip()}) in {new_venue} race\n"
+                                                              f"(Enter 0 if this runner did not run in this race)\n"
+                                                              f"==> ")
+            if get_each_time_in_second != 0:  # Only added when a non-zero number is entered
+                added_result = f"{line_data[1]},{get_each_time_in_second}"
+                print(added_result)  # Print this data to the screen as it is entered in the following format: KY-12,319
+                new_venue_file = f"{get_new_venue.lower()}.txt"  # the name of a new race(in new venue) file which was gotten from above
+                destination_new_venue_file = open(new_venue_file, 'w')  # create new race(in new venue) file and write to it in the following format: KY-12,319
+                destination_new_venue_file.write(added_result)
+                destination_new_venue_file.close()
+        connection.close()
+        # Overwrite the existing file with the current list.
 
 
-def show_race_details(races_list):
-    # Display the list of races and allow the user enter a number .
-    # From this number find the name of the race chosen.
-    # Construct the name of the file for this race -
-    # Open the file and read the data into 2 lists: and id_list and times_list.
-    # Display this information to the screen.
-    for i, item in enumerate(races_list): # 여기 그냥 단순 메뉴 제시로 수정하는게 어떨지.. 굳이 enumerate로 할 필요가 있을지..
-        print(f"{i+1}: {item}")
-    while True:
-        race_number = module.get_positive_int("Choose a race: ")
-        # id_list_of_each_race = []
-        # time_list_of_each_race = []
-        # converted_time_list_of_each_race = []
-        if race_number == 1 or race_number == 2:
-            if race_number == 1:
-                display_each_race_details(races_list, race_number)
-                # title = f"Result for {races_list[0]}"
-                # length_title = len(title)
-                # division_line = '=' * length_title
-                # print(title)
-                # print(division_line)
-                # connection = open(f"{races_list[0].lower()}.txt")
-                # while True:
-                #     line = connection.readline()
-                #     line_data = line.split(",")
-                #     if line == "":
-                #         break
-                #     id_list_of_each_race.append(line_data[0])
-                #     time_list_of_each_race.append(line_data[1].rstrip())
-                #     converted_time_list = convert_time_from_seconds_to_minutes(time_list_of_each_race)
-                #     converted_time_list_of_each_race = converted_time_list
-                # connection.close()
-                # for i in range(len(id_list_of_each_race)):
-                #     print(f"{id_list_of_each_race[i]}   {converted_time_list_of_each_race[i]}")
-                # print()
-                # position_of_winner = find_position_of_winner(time_list_of_each_race)
-                # print(f"{id_list_of_each_race[position_of_winner]} won the race.")
-                break
-            elif race_number == 2:
-                display_each_race_details(races_list, race_number)
-                # print(f"Result for {races_list[1]}")
-                break
-        else:
-            print("Enter a correct number.")
+def save_races_list(races_list):
+    races_list = show_menu()
+# the save_races_list function takes the races list as a parameter
+# and recreates the races.txt file. Race locations many have been
+# added during the program run.
 
 
 def main():
@@ -196,7 +219,6 @@ def main():
     races_list, names_list, id_list = load_races_and_people(races_file, runners_file)
     show_menu(races_list, names_list, id_list)
     save_races_list(races_list)
-    show_race_details(races_list)
 
 
 main()

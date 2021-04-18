@@ -92,6 +92,7 @@ def show_menu(races_list, names_list, id_list):
                   f"id_list = {id_list}\n")  # for interim check
         if choose_menu == 4:
             print("***** Show the winner of each race *****\n")
+            show_winner_for_each_race(races_list)
             print(f"races_list = {races_list}\n"  # for interim check
                   f"names_list = {names_list}\n"  # for interim check
                   f"id_list = {id_list}\n")  # for interim check
@@ -234,6 +235,59 @@ def show_competitors_by_county(names_list, id_list):
     title_bar("Kerry Runners")  # Result 2: Print Kerry runners
     for kerry in range(len(kerry_runners_names_list)):
         print(f"{kerry_runners_names_list[kerry]:<15}{kerry_runners_id_list[kerry]}")
+
+
+# 메뉴 옵션4에 해당함
+def show_winner_for_each_race(races_list):
+    title = f"{'Venue':<20} Winner"
+    title_bar(title)
+    for venue in races_list:
+        time_list_of_each_race = []
+        id_list_of_each_race = []
+        connection = open(f"{venue.lower()}.txt")
+        while True:
+            line = connection.readline()
+            line_data = line.split(",")
+            if line == "":
+                break
+            id_list_of_each_race.append(line_data[0])
+            time_list_of_each_race.append(line_data[1].rstrip())
+        position_of_winner = find_position_of_winner(time_list_of_each_race)
+        print(f"{venue:<20} {id_list_of_each_race[position_of_winner]}")
+        # print(f"id_list_of_each_race: {id_list_of_each_race}")
+        # print(f"time_list_of_each_race: {time_list_of_each_race}")
+
+
+        # id_list_of_each_race = []
+        # time_list_of_each_race = []
+        # converted_time_list_of_each_race = []
+        # print("")
+        # title = f"Result for {races_list[race_position]}"
+        # title_bar(title)
+        # connection = open(f"{races_list[race_position].lower()}.txt")  # open the each venue of race file
+        # while True:
+        #     line = connection.readline()
+        #     line_data = line.split(",")
+        #     if line == "":
+        #         break
+        #     id_list_of_each_race.append(line_data[0])
+        #     time_list_of_each_race.append(line_data[1].rstrip())
+        #     converted_time_list = convert_time_from_seconds_to_minutes(time_list_of_each_race)
+        #     converted_time_list_of_each_race = converted_time_list
+        # connection.close()
+        # for i in range(len(id_list_of_each_race)):
+        #     print(f"{id_list_of_each_race[i]}   {converted_time_list_of_each_race[i]}")
+        # print("")
+        # position_of_winner = find_position_of_winner(time_list_of_each_race)
+        # print(f"{id_list_of_each_race[position_of_winner]} won the race.")
+
+
+# def find_position_of_winner(time_list):
+#     fastest = min(time_list)
+#     position_of_winner = time_list.index(fastest)
+#     return position_of_winner
+
+
 
 
 

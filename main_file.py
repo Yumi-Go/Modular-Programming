@@ -88,9 +88,6 @@ def show_menu(races_list, names_list, id_list):
         elif choose_menu == 6:
             print("***** Show all competitors who have won a race *****\n")
             show_all_winners(races_list, names_list, id_list)
-            print(f"races_list = {races_list}\n"  # for interim check
-                  f"names_list = {names_list}\n"  # for interim check
-                  f"id_list = {id_list}\n")  # for interim check
         elif choose_menu == 7:
             break
     return races_list
@@ -118,7 +115,7 @@ def show_race_details(races_list):
         print("")
         position_of_winner = find_position_of_winner(times_list_for_each_race)
         print(f"{id_list_for_each_race[position_of_winner]} won the race.")
-        print("\n\n")
+        print("")
 
 
 # choose_menu == 2. Add results for a race
@@ -151,8 +148,8 @@ def add_new_race(races_list):
                 destination_new_venue_file.close()
         connection.close()
         choose_add_or_quit = module.get_positive_int("Do you want to add another new venue for the race continuously?\n"
-                                                     "\t1. Yes - Continue\n"
-                                                     "\t2. No - Quit\n"
+                                                     "\t1. Yes (Continue)\n"
+                                                     "\t2. No (Quit)\n"
                                                      "==> ")
         print("")
         if choose_add_or_quit == 2:
@@ -165,13 +162,13 @@ def show_competitors_by_county(names_list, id_list):
     cork_runners_names_list = []
     kerry_runners_id_list = []
     kerry_runners_names_list = []
-    for id in id_list:
-        position = id_list.index(id)  # position in names_list & id_list
-        if id[:2] == 'CK':
-            cork_runners_id_list.append(id)
+    for ID in id_list:
+        position = id_list.index(ID)  # position in names_list & id_list
+        if ID[:2] == 'CK':
+            cork_runners_id_list.append(ID)
             cork_runners_names_list.append(names_list[position])
-        elif id[:2] == 'KY':
-            kerry_runners_id_list.append(id)
+        elif ID[:2] == 'KY':
+            kerry_runners_id_list.append(ID)
             kerry_runners_names_list.append(names_list[position])
     print(f"cork_runners_id_list: {cork_runners_id_list}")  # for interim check
     print(f"cork_runners_names_list: {cork_runners_names_list}")  # for interim check
@@ -227,22 +224,21 @@ def show_info_for_each_runner(races_list, names_list, id_list):
 
 # choose_menu == 6. Show all competitors who have won a race
 def show_all_winners(races_list, names_list, id_list):
+    title = "The following runners have all won at least one race:"
+    title_bar(title)
+    all_winners_names_list = []
+    all_winners_id_list = []
     for venue in races_list:
         id_list_for_each_race, times_list_for_each_race = get_id_and_times_list_for_each_race(venue)
-        names_list_for_each_race = get_names_list_for_each_race(id_list_for_each_race)
-        print(id_list_for_each_race)  # for interim check
-        print(times_list_for_each_race)  # for interim check
-        print(names_list_for_each_race)  # for interim check
+        names_list_for_each_race = get_names_list_for_each_race(id_list, id_list_for_each_race, names_list)
         position_of_winner = find_position_of_winner(times_list_for_each_race)
-        print(position_of_winner)  # for interim check
-        title = "The following runners have all won at least one race:"
-        title_bar(title)
-        # print(f"{names_list_for_each_race[position_of_winner]} ({id_list_for_each_race[position_of_winner]})")
-        # print(f"races_list = {races_list}\n"
-        #       f"names_list = {names_list}\n"
-        #       f"id_list = {id_list}\n"
-        #       f"times_list_for_each_race = {times_list_for_each_race}\n")
-
+        if names_list_for_each_race[position_of_winner] not in all_winners_names_list:
+            all_winners_names_list.append(names_list_for_each_race[position_of_winner])
+        if id_list_for_each_race[position_of_winner] not in all_winners_id_list:
+            all_winners_id_list.append(id_list_for_each_race[position_of_winner])
+    for i in range(len(all_winners_names_list)):
+        print(f"{all_winners_names_list[i]:<15}({all_winners_id_list[i]})")
+    print("")
 
 
 # From here: add-on functions that run inside the options of show_menu()
@@ -256,7 +252,7 @@ def title_bar(title):
 def convert_time_from_seconds_to_minutes(time_list):
     converted_times_list = []
     for time in time_list:
-        converted_time = f"{int(time) // 60} min {int(time) % 60:>2} seconds"
+        converted_time = f"{int(time) // 60:>3} min {int(time) % 60:>2} seconds"
         converted_times_list.append(converted_time)
     return converted_times_list
 
@@ -282,18 +278,11 @@ def get_id_and_times_list_for_each_race(venue):
     return id_list_for_each_race, times_list_for_each_race
 
 
-def get_names_list_for_each_race(id_list_for_each_race):
+def get_names_list_for_each_race(id_list, id_list_for_each_race, names_list):
     names_list_for_each_race = []
-    connection = open("runners.txt")
-    for id in id_list_for_each_race:
-        while True:
-            line = connection.readline()
-            line_data = line.split(",")
-            if line == "":
-                break
-            if line_data[1].rstrip() == id:
-                names_list_for_each_race.append(line_data[0])
-    connection.close()
+    for ID in id_list_for_each_race:
+        position = id_list.index(ID)
+        names_list_for_each_race.append(names_list[position])
     return names_list_for_each_race
 
 

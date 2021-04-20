@@ -1,6 +1,5 @@
 # Name: Yumi Go
 # Description: Week 12 Project
-# 다 하면 http://pythontutor.com/visualize.html#mode=edit 돌려보기
 
 import module
 
@@ -219,7 +218,7 @@ def show_info_for_each_runner(races_list, names_list, id_list):
                 converted_time_for_runner = converted_times_list[position_in_each_race]  # time for runner in minutes & seconds
                 ranking = get_ranking(times_list_for_each_race, time_for_runner)
                 print(f"{venue:<15} {converted_time_for_runner} ({ranking} of {len(times_list_for_each_race)})")
-                print("")
+        print("")
 
 
 # choose_menu == 6. Show all competitors who have won a race

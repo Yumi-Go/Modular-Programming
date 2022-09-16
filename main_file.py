@@ -25,9 +25,6 @@ def load_races_and_people(races_file, runners_file):
         names_list.append(line_data[0])
         id_list.append(line_data[1].rstrip())
     connection_runners.close()
-    print(f"races_list = {races_list}\n"
-          f"names_list = {names_list}\n"
-          f"id_list = {id_list}\n")
     return races_list, names_list, id_list
 
 
@@ -48,9 +45,6 @@ def show_menu(races_list, names_list, id_list):
         elif choose_menu == 1:
             print("***** Show the results for a race *****\n")
             show_race_details(races_list)
-            print(f"races_list = {races_list}\n"  # for interim check
-                  f"names_list = {names_list}\n"  # for interim check
-                  f"id_list = {id_list}\n")  # for interim check
         elif choose_menu == 2:
             print("***** Add results for a race *****\n")
             add_new_race(races_list)
@@ -59,31 +53,15 @@ def show_menu(races_list, names_list, id_list):
             read_races_file = connection.read()
             print(read_races_file)
             connection.close()
-            print(f"Races locations stored in this program: {races_list}")
-            print(f"races_list = {races_list}\n"  # for interim check
-                  f"names_list = {names_list}\n"  # for interim check
-                  f"id_list = {id_list}\n")  # for interim check
         elif choose_menu == 3:
-            # This requires printing the competitors names and the competitors ids in two groups.
-            # 1. Print those from Cork – ( if the id starts with “CK”)
-            # 2. Print them those from Kerry – ( if the id starts with “KY”)
             print("***** Show all competitors by county *****\n")
             show_competitors_by_county(names_list, id_list)
-            print(f"races_list = {races_list}\n"  # for interim check
-                  f"names_list = {names_list}\n"  # for interim check
-                  f"id_list = {id_list}\n")  # for interim check
         elif choose_menu == 4:
             print("***** Show the winner of each race *****\n")
             show_winner_for_each_race(races_list)
-            print(f"races_list = {races_list}\n"  # for interim check
-                  f"names_list = {names_list}\n"  # for interim check
-                  f"id_list = {id_list}\n")  # for interim check
         elif choose_menu == 5:
             print("***** Show all the race times for one competitor *****\n")
             show_info_for_each_runner(races_list, names_list, id_list)
-            print(f"races_list = {races_list}\n"  # for interim check
-                  f"names_list = {names_list}\n"  # for interim check
-                  f"id_list = {id_list}\n")  # for interim check
         elif choose_menu == 6:
             print("***** Show all competitors who have won a race *****\n")
             show_all_winners(races_list, names_list, id_list)
@@ -169,10 +147,6 @@ def show_competitors_by_county(names_list, id_list):
         elif ID[:2] == 'KY':
             kerry_runners_id_list.append(ID)
             kerry_runners_names_list.append(names_list[position])
-    print(f"cork_runners_id_list: {cork_runners_id_list}")  # for interim check
-    print(f"cork_runners_names_list: {cork_runners_names_list}")  # for interim check
-    print(f"kerry_runners_id_list: {kerry_runners_id_list}")  # for interim check
-    print(f"kerry_runners_names_list: {kerry_runners_names_list}")  # for interim check
     title_bar("Cork Runners")  # Result 1: Print Cork runners
     for cork in range(len(cork_runners_names_list)):
         print(f"{cork_runners_names_list[cork]:<15}{cork_runners_id_list[cork]}")
